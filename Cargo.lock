@@ -28,7 +28,7 @@ dependencies = [
  "futures",
  "hex",
  "lazy_static",
- "libc",
+ "libc 0.2.112",
  "log",
  "nix",
  "num-derive",
@@ -88,7 +88,7 @@ checksum = "de0a745c25b32caa56b82a3950f5fec7893a960f4c10ca3b02060b0c38d8c2ce"
 dependencies = [
  "futures-channel",
  "futures-util",
- "libc",
+ "libc 0.2.112",
  "libdbus-sys",
  "winapi",
 ]
@@ -109,7 +109,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "12a1a74a0c53b22d7d994256cf3ecbeefa5eedce3cf9d362945ac523c4132180"
 dependencies = [
  "dbus",
- "libc",
+ "libc 0.2.112",
  "tokio",
 ]
 
@@ -220,7 +220,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7fcd999463524c52659517fe2cea98493cfe485d10565e7b0fb07dbba7ad2753"
 dependencies = [
  "cfg-if",
- "libc",
+ "libc 0.2.112",
  "wasi",
 ]
 
@@ -245,7 +245,7 @@ version = "0.1.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "62b467343b94ba476dcb2500d242dadbb39557df889310ac77c5d99100aaac33"
 dependencies = [
- "libc",
+ "libc 0.2.112",
 ]
 
 [[package]]
@@ -284,6 +284,12 @@ name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
+
+[[package]]
+name = "libc"
+version = "0.1.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e32a70cf75e5846d53a673923498228bbec6a8624708a9ea5645f075d6276122"
 
 [[package]]
 name = "libc"
@@ -345,7 +351,7 @@ version = "0.7.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8067b404fe97c70829f082dec8bcf4f71225d7eaea1d8645349cb76fa06205cc"
 dependencies = [
- "libc",
+ "libc 0.2.112",
  "log",
  "miow",
  "ntapi",
@@ -370,7 +376,7 @@ dependencies = [
  "bitflags",
  "cc",
  "cfg-if",
- "libc",
+ "libc 0.2.112",
  "memoffset",
 ]
 
@@ -410,7 +416,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "19e64526ebdee182341572e50e9ad03965aa510cd94427a4549448f285e957a1"
 dependencies = [
  "hermit-abi",
- "libc",
+ "libc 0.2.112",
 ]
 
 [[package]]
@@ -420,12 +426,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "da32515d9f6e6e489d7bc9d84c71b060db7247dc035bbe44eac88cf87486d8d5"
 
 [[package]]
+name = "pam"
+version = "0.1.0"
+source = "git+https://github.com/anowell/pam-rs?rev=4bb68d3#4bb68d314deadee0985c2f4f12cc952e5e17cd1e"
+dependencies = [
+ "libc 0.1.12",
+]
+
+[[package]]
 name = "pam_btbeacon"
 version = "0.1.0"
 dependencies = [
  "bluer",
  "futures",
  "once_cell",
+ "pam",
  "serde",
  "serde_yaml",
  "tokio",
@@ -450,7 +465,7 @@ checksum = "d76e8e1493bcac0d2766c42737f34458f1c8c50c0d23bcb24ea953affb273216"
 dependencies = [
  "cfg-if",
  "instant",
- "libc",
+ "libc 0.2.112",
  "redox_syscall",
  "smallvec",
  "winapi",
@@ -582,7 +597,7 @@ version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e51e73328dc4ac0c7ccbda3a494dfa03df1de2f46018127f60c693f2648455b0"
 dependencies = [
- "libc",
+ "libc 0.2.112",
 ]
 
 [[package]]
@@ -648,7 +663,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fbbf1c778ec206785635ce8ad57fe52b3009ae9e0c9f574a728f3049d3e55838"
 dependencies = [
  "bytes",
- "libc",
+ "libc 0.2.112",
  "memchr",
  "mio",
  "num_cpus",
