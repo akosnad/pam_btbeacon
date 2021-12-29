@@ -1,7 +1,8 @@
 [package]
-name = "pam_ibeacon"
+name = "pam_btbeacon"
 version = "0.1.0"
 edition = "2021"
+authors = ["akosnad"]
 
 [dependencies]
 tokio = { version = "1.15", features = ["full"] }
