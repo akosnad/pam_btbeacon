@@ -1,18 +1,60 @@
 use std::str::FromStr;
 use std::error::Error;
+use std::time::Duration;
 use bluer::{Session, Adapter, Address};
+use tokio::time::timeout;
 
 mod settings;
 
-async fn scan_for_target(adapter: &Adapter, target: &str) -> Result<bool, Box<dyn Error>> {
-    let target_address: Address = Address::from_str(target)?;
-    let discovery_stream = adapter.discover_devices().await?;
-    let discovered = adapter.device_addresses().await?;
-    println!("Discovered devices: {:#?}", discovered);
-    if discovered.contains(&target_address) {
+#[derive(Debug)]
+struct ScanError {
+    pub msg: String
+}
+impl ScanError {
+    pub fn with_msg(s: &str) -> Box<Self> {
+        Box::new(ScanError {
+            msg: s.to_string()
+        })
+    }
+}
+impl std::fmt::Display for ScanError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error>{
+        write!(f, "Error while scanning for device")
+    }
+}
+impl std::error::Error for ScanError {}
+
+async fn is_device_in_range(adapter: &Adapter, target_address: Address) -> Result<bool, Box<dyn Error>> {
+    let device = adapter.device(target_address)?;
+    if device.is_connected().await? {
+        println!("Device in range");
         return Ok(true);
     }
-    Ok(false)
+    println!("Device not connected");
+    if let Ok(_) = device.connect().await {
+        println!("Successfully connected device");
+        return Ok(true);
+    }
+    return Ok(false);
+}
+
+async fn scan_for_target(adapter: &Adapter) -> Result<(), Box<dyn Error>> {
+    let s = settings::get();
+    let target_address: Address = Address::from_str(&s.target)?;
+    let interval = Duration::from_millis((s.interval.unwrap_or(0.5) * 1000.) as u64);
+    println!("Looking for: {:?}", target_address);
+
+    let known = adapter.device_addresses().await?;
+
+    if !known.contains(&target_address) {
+        return Err(ScanError::with_msg("Device not paired"));
+    }
+    loop {
+        if is_device_in_range(adapter, target_address).await? {
+            return Ok(());
+        }
+        std::thread::sleep(interval);
+    }
 }
 
 async fn init_adapter() -> Result<Adapter, Box<dyn Error>> {
@@ -43,15 +85,18 @@ async fn init_adapter() -> Result<Adapter, Box<dyn Error>> {
 async fn run() -> Result<(), Box<dyn Error>> {
     settings::load_settings("./settings.yml")?;
     let s = settings::get();
+    let scan_timeout = Duration::from_secs(s.scan_timeout.unwrap_or(5));
+
     let adapter = init_adapter().await?;
-    println!("Scan result: {:?}", scan_for_target(&adapter, &s.target).await);
-    Ok(())
+    let scan_task = scan_for_target(&adapter);
+    if s.scan_timeout.is_some() && s.scan_timeout.unwrap() == 0 {
+        println!("WARNING: scan timeout is set to unlimited, this is only good for testing!");
+        return scan_task.await;
+    }
+    return timeout(scan_timeout, scan_task).await?;
 }
 
 #[tokio::main]
 async fn main() {
-    let task = tokio::task::spawn(async move {
-        run().await.unwrap();
-    });
-    task.await.unwrap();
+    run().await.unwrap();
 }

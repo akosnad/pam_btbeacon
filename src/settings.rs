@@ -3,8 +3,10 @@ use once_cell::sync::OnceCell;
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct Settings {
-    pub adapter: Option<String>,
     pub target: String,
+    pub adapter: Option<String>,
+    pub scan_timeout: Option<u64>,
+    pub interval: Option<f64>,
 }
 
 static SETTINGS: OnceCell<Settings> = OnceCell::new();
