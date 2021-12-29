@@ -1,0 +1,12 @@
+[package]
+name = "pam_ibeacon"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.15", features = ["full"] }
+futures = "0.3"
+bluer = "0.13"
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.8"
+once_cell = "1.9"
